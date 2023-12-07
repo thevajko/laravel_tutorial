@@ -21,11 +21,19 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed'
-        ];
+        if ($this->method == 'PUT') {
+            return [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6|confirmed'
+            ];
+        } else {
+            return [
+                'name' => 'required',
+                'email' => 'required|email',
+                'password' => 'required|min:6|confirmed'
+            ];
+        }
     }
 
 //    public function messages()
