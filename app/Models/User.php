@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -44,7 +43,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'created_at' => 'datetime:j.n.Y H:i'
+        'created_at' => 'datetime'
     ];
 
     /**
@@ -60,11 +59,14 @@ class User extends Authenticatable
             ->like('created_at');
     }
 
-    protected function Role() : Attribute
+    /**
+     * Accessor for created_at attribute
+     * @return Attribute
+     */
+    protected function createdAt(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value == 'Admin' ? 'Administrator' : 'Regular user'
+            get: fn($value) => $this->castAttribute('created_at', $value)->format('m/d/Y H:m:i')
         );
     }
-
 }

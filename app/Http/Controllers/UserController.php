@@ -29,11 +29,21 @@ class UserController extends Controller
 
         $grid->setColumn('name', 'Full name', ['sortable' => true, 'has_filters' => true])
             ->setColumn('email', 'Email address', ['sortable' => true, 'has_filters' => true])
-            ->setColumn('role', 'Role', ['sortable' => true, 'has_filters' => true, 'filters' => ['Admin' => 'Admin', 'User' => 'User']])
+            ->setColumn('role', 'Role', [
+                'sortable' => true,
+                'has_filters' => true,
+                'filters' => ['Admin' => 'Administrator', 'User' => 'Regular user'],
+                'wrapper' => function ($value, $row) {
+                    return match ($value) {
+                        'Admin' => 'Administrator',
+                        'User' => 'Regular user'
+                    };
+                }
+            ])
             ->setColumn('created_at', 'Created at', ['sortable' => true, 'has_filters' => true])
             ->setActionColumn([
                 'wrapper' => function ($value, $row) {
-                    return (Auth::user()->can('update', $row->getData()) ? '<a href="' . route('user.edit', [$row->id]) . '" title="Edit" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a> ' : '').
+                    return (Auth::user()->can('update', $row->getData()) ? '<a href="' . route('user.edit', [$row->id]) . '" title="Edit" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a> ' : '') .
                         (Auth::user()->can('delete', $row->getData()) ? '<a href="' . route('user.delete', $row->id) . '" title="Delete" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>' : '');
                 }
             ]);
@@ -98,7 +108,7 @@ class UserController extends Controller
     {
 //        $request->validate([
 //            'name' => 'required',
-//            'email' => 'required|email|unique:users,email',
+//            'email' => 'required|email',
 //            'password' => 'required|min:6|confirmed'
 //        ]);
         $user->update($request->all());
