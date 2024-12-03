@@ -66,7 +66,7 @@ class User extends Authenticatable
     protected function createdAt(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $this->castAttribute('created_at', $value)->format('m/d/Y H:m:i')
+            get: fn($value) => $this->castAttribute('created_at', $value)->format('m.d.Y H:m:i')
         );
     }
 }

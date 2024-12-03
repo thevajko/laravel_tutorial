@@ -36,7 +36,7 @@ class UserController extends Controller
                 'wrapper' => function ($value, $row) {
                     return match ($value) {
                         'Admin' => 'Administrator',
-                        'User' => 'Regular user'
+                        default => 'Regular user',
                     };
                 }
             ])
